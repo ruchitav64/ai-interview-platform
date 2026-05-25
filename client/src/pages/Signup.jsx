@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { signup } from "../services/authService";
 import { useNavigate, Link } from "react-router-dom";
+import { createUserProfile } from "../services/firestoreService";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -10,7 +11,10 @@ function Signup() {
 
   const handleSignup = async () => {
     try {
-      await signup(email, password);
+      const userCredential = await signup(email, password);
+
+      await createUserProfile(userCredential.user);
+
       navigate("/dashboard");
     } catch (error) {
       alert(error.message);
