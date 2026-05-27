@@ -1,13 +1,11 @@
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
 
 load_dotenv(dotenv_path=".env")
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
-model = genai.GenerativeModel(
-    "models/gemini-3.1-flash-live-preview"
+client = genai.Client(
+    api_key=os.getenv("GEMINI_API_KEY")
 )
 
 def evaluate_answer(question, answer):
@@ -30,6 +28,14 @@ def evaluate_answer(question, answer):
     4. Confidence score out of 10
     """
 
-    response = model.generate_content(prompt)
+    try:
 
-    return response.text
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        return response.text
+
+    except Exception as e:
+        return str(e)
